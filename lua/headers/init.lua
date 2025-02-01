@@ -4,6 +4,8 @@ function M.setup(opts)
   opts = opts or { keymaps = true }
 
   if opts.keymaps then
+    vim.keymap.set("n", "<leader>gH", function() M.new_header() end,
+      { desc = "Show new header window" })
     vim.keymap.set("n", "<leader>gh", function() M.create_header() end,
       { desc = "Create comment header from current line" })
     vim.keymap.set("v", "<leader>gh", function() M.create_header() end,
@@ -113,6 +115,16 @@ function M.create_header()
 
   local new_lines = create_lines(lines)
   vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, new_lines)
+end
+
+function M.new_header()
+  local input = vim.fn.input("Header: ")
+  if trim_whitespace(input) == "" then
+    return
+  end
+  local output = create_lines({ input })
+  local pos = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, pos, pos, false, output)
 end
 
 return M
