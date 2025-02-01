@@ -12,6 +12,14 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```
 
 ### Usage
+#### Options
+```help
+`keymaps` - Set default keymaps
+`center` - Center text in header
+`fixed_width` - Fixed width headers
+`trim` - Trim overlength text to fit `fixed_width`
+```
+
 #### User Commands
 ```help
 `CreateHeader` - Replaces the selected lines/current line with header
@@ -28,3 +36,4 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```help
 `<leader>gh` - Replaces the selected lines with header (`CreateHeader`)
 ```
+
