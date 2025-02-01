@@ -11,11 +11,6 @@ function M.setup(opts)
     vim.keymap.set("v", "<leader>gh", function() M.create_header() end,
       { desc = "Create comment header from block selection" })
   end
-
-  vim.api.nvim_create_user_command("CreateHeader", function() M.create_header() end,
-    { desc = "Create header from selection or current line" })
-  vim.api.nvim_create_user_command("NewHeader", function() M.new_header() end,
-    { desc = "Create header from user input" })
 end
 
 local comment_strings = { start_str = "--", end_str = "--", mid_str = "-" }
