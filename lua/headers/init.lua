@@ -1,7 +1,15 @@
 local M = {}
 
+M.opts = {
+  center = false,
+  fixed_width = 0,
+}
+
 function M.setup(opts)
   opts = opts or { keymaps = true }
+
+  M.opts.fixed_width = opts.fixed_width or 0
+  M.opts.center = opts.center or false
 
   if opts.keymaps then
     vim.keymap.set("n", "<leader>gH", function() M.new_header() end,
@@ -54,9 +62,15 @@ end
 --- @param l integer
 --- @return string
 local function comment(s, l)
-  return comment_strings.start_str .. " " ..
-      s .. string.rep(" ", (l - string.len(s)) - 1)
-      .. " " .. comment_strings.end_str
+  local pad = 1
+  if M.opts.center then
+    pad = (l - #s + ((l - #s) % 2)) / 2
+  end
+  return comment_strings.start_str ..
+      string.rep(" ", pad) ..
+      s ..
+      string.rep(" ", l - pad - #s + 1)
+      .. comment_strings.end_str
 end
 
 
@@ -66,10 +80,12 @@ local function create_lines(lines)
   local new_lines = {}
   local max_line_length = 0
   for _, s in ipairs(lines) do
-    if string.len(trim_whitespace(s)) > max_line_length then
-      max_line_length = string.len(trim_whitespace(s))
+    if #trim_whitespace(s) > max_line_length then
+      max_line_length = #trim_whitespace(s)
     end
   end
+
+  max_line_length = math.max(max_line_length, M.opts.fixed_width)
 
   max_line_length = max_line_length + 1
 
