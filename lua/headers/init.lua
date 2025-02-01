@@ -3,13 +3,15 @@ local M = {}
 M.opts = {
   center = false,
   fixed_width = 0,
+  trim = true
 }
 
 function M.setup(opts)
   opts = opts or { keymaps = true }
 
   M.opts.fixed_width = opts.fixed_width or 0
-  M.opts.center = opts.center or false
+  M.opts.center = opts.center
+  M.opts.trim = opts.trim
 
   if opts.keymaps then
     vim.keymap.set("n", "<leader>gH", function() M.new_header() end,
@@ -85,9 +87,15 @@ local function create_lines(lines)
     end
   end
 
-  max_line_length = math.max(max_line_length, M.opts.fixed_width)
+  if M.opts.fixed_width > 0 then
+    if not M.opts.trim then
+      max_line_length = math.max(max_line_length, M.opts.fixed_width)
+    else
+      max_line_length = M.opts.fixed_width
+    end
+  end
 
-  max_line_length = max_line_length + 1
+  max_line_length = max_line_length - 1 - #comment_strings.start_str - #comment_strings.end_str
 
   table.insert(new_lines, make_v_boundary(max_line_length))
   table.insert(new_lines, comment("", max_line_length))
@@ -95,7 +103,11 @@ local function create_lines(lines)
     if s == "" and i == #lines then
       goto continue
     end
-    table.insert(new_lines, comment(trim_whitespace(s), max_line_length))
+    local ss = trim_whitespace(s)
+    if M.opts.trim and #ss > max_line_length then
+      ss = string.sub(ss, 1, max_line_length - 4) .. "..."
+    end
+    table.insert(new_lines, comment(ss, max_line_length))
     ::continue::
   end
   table.insert(new_lines, comment("", max_line_length))
