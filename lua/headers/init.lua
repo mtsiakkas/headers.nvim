@@ -124,7 +124,7 @@ function M.new_header()
   end
   local output = create_lines({ input })
   local pos = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, pos, pos, false, output)
+  vim.api.nvim_buf_set_lines(0, pos - 1, pos - 1, false, output)
 end
 
 return M
