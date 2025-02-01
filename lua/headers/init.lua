@@ -104,7 +104,11 @@ function M.create_header()
     local pos = vim.api.nvim_win_get_cursor(0)[1]
     start_line = pos
     end_line = pos
-    lines = { vim.api.nvim_buf_get_lines(0, pos - 1, pos, false)[1] }
+    local line = vim.api.nvim_buf_get_lines(0, pos - 1, pos, false)[1]
+    if trim_whitespace(line) == "" then
+      return
+    end
+    lines = { line }
   end
 
   local new_lines = create_lines(lines)
