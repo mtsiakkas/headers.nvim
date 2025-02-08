@@ -1,5 +1,4 @@
 local ft = require('headers.ft')
-
 local M = {}
 
 M.opts = {
@@ -45,8 +44,7 @@ end
 local function load_str()
   local pos = vim.api.nvim_win_get_cursor(0)
 
-  local filetype = vim.bo.filetype
-  if ft.filetypes[filetype] == nil then
+  if ft.filetypes[vim.bo.filetype] == nil then
     return {}
   end
 
