@@ -25,6 +25,11 @@ function M.setup(opts)
   end
 end
 
+------------------------------------------------------------
+--                                                        --
+-- Trim whitespace from string                            --
+--                                                        --
+------------------------------------------------------------
 --- @param s string
 --- @return string
 local function trim_whitespace(s)
@@ -99,9 +104,9 @@ end
 --                                                        --
 ------------------------------------------------------------
 --- @param lines string[]
---- @param str table
 --- @return string[]
-local function create_lines(lines, str)
+local function create_lines(lines)
+  local str = load_str()
   if str == {} then return {} end
   local new_lines = {}
   local max_line_length = 0
@@ -150,8 +155,7 @@ end
 --                                                        --
 ------------------------------------------------------------
 function M.create_header()
-  local str = load_str()
-  if next(str) == nil then
+  if next(load_str()) == nil then
     return
   end
   local start_line = 0
@@ -173,7 +177,7 @@ function M.create_header()
     lines = { line }
   end
 
-  local new_lines = create_lines(lines, str)
+  local new_lines = create_lines(lines)
   vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, new_lines)
 end
 
@@ -183,15 +187,14 @@ end
 --                                                        --
 ------------------------------------------------------------
 function M.new_header()
-  local str = load_str()
-  if next(str) == nil then
+  if next(load_str()) == nil then
     return
   end
   local input = vim.fn.input("Header: ")
   if trim_whitespace(input) == "" then
     return
   end
-  local output = create_lines({ input }, str)
+  local output = create_lines({ input })
   local pos = vim.api.nvim_win_get_cursor(0)[1]
   vim.api.nvim_buf_set_lines(0, pos - 1, pos - 1, false, output)
 end
